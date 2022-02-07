@@ -46,7 +46,7 @@ RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
     && chown root:root /opt/homelab \
     # Install the gitolite binary. \
     && su --login --shell /bin/bash --command "/opt/gitolite/install -ln /opt/bin" gitolite \
-    # Copy the entrypoint script.
+    # Copy the entrypoint script. \
     && cp /scripts/entrypoint.sh /usr/sbin/entrypoint.sh \
     # Clean up. \
     && homelab remove util-linux \
