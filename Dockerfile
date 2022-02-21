@@ -47,7 +47,8 @@ RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
     # Install the gitolite binary. \
     && su --login --shell /bin/bash --command "/opt/gitolite/install -ln /opt/bin" gitolite \
     # Copy the start-gitolite.sh script. \
-    && cp /scripts/start-gitolite.sh /usr/sbin/start-gitolite.sh \
+    && cp /scripts/start-gitolite.sh /opt/gitolite/ \
+    && ln -sf /opt/gitolite/start-gitolite.sh /opt/bin/start-gitolite \
     # Clean up. \
     && homelab remove util-linux \
     && homelab cleanup
@@ -57,5 +58,5 @@ ENV PATH="/opt/bin:${PATH}"
 
 USER ${USER_NAME}:${GROUP_NAME}
 WORKDIR /home/${USER_NAME}
-CMD ["start-gitolite.sh"]
+CMD ["start-gitolite"]
 STOPSIGNAL SIGQUIT
