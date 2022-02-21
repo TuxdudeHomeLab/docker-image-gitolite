@@ -86,9 +86,5 @@ start_gitolite_sshd () {
     exec /usr/sbin/sshd -D -e -f ${sshd_config:?}
 }
 
-if [ "$1" = 'gitolite-oneshot' ]; then
-    setup_gitolite
-    start_gitolite_sshd
-else
-    exec "$@"
-fi
+setup_gitolite
+start_gitolite_sshd

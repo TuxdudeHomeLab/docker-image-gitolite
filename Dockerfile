@@ -57,5 +57,5 @@ ENV PATH="/opt/bin:${PATH}"
 
 USER ${USER_NAME}:${GROUP_NAME}
 WORKDIR /home/${USER_NAME}
-CMD ["start-gitolite.sh", "gitolite-oneshot"]
+CMD ["start-gitolite.sh"]
 STOPSIGNAL SIGQUIT
