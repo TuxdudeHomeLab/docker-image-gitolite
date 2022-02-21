@@ -4,7 +4,7 @@ ARG BASE_IMAGE_NAME
 ARG BASE_IMAGE_TAG
 FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG} AS with-scripts
 
-COPY scripts/entrypoint.sh /scripts/
+COPY scripts/start-gitolite.sh /scripts/
 
 ARG BASE_IMAGE_NAME
 ARG BASE_IMAGE_TAG
@@ -46,8 +46,8 @@ RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
     && chown root:root /opt/homelab \
     # Install the gitolite binary. \
     && su --login --shell /bin/bash --command "/opt/gitolite/install -ln /opt/bin" gitolite \
-    # Copy the entrypoint script. \
-    && cp /scripts/entrypoint.sh /usr/sbin/entrypoint.sh \
+    # Copy the start-gitolite.sh script. \
+    && cp /scripts/start-gitolite.sh /usr/sbin/start-gitolite.sh \
     # Clean up. \
     && homelab remove util-linux \
     && homelab cleanup
@@ -57,6 +57,6 @@ ENV PATH="/opt/bin:${PATH}"
 
 USER ${USER_NAME}:${GROUP_NAME}
 WORKDIR /home/${USER_NAME}
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["start-gitolite.sh"]
 CMD ["gitolite-oneshot"]
 STOPSIGNAL SIGQUIT
