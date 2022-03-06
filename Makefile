@@ -1,6 +1,4 @@
 IMAGE_NAME := homelab-gitolite
-ENABLE_DOCKER_BUILDKIT := y
-DOCKER_BUILDKIT_PROGRESS_PLAIN ?= n
 
 include ./.bootstrap/makesystem.mk
 
