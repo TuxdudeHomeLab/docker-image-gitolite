@@ -1,5 +1,5 @@
 BASE_IMAGE_NAME=tuxdude/homelab-base
-BASE_IMAGE_TAG=master
+BASE_IMAGE_TAG=0.1.0-bullseye-20220418-slim
 GITOLITE_VERSION=3.6.12
 USER_NAME=gitolite
 GROUP_NAME=gitolite
