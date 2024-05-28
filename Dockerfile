@@ -34,7 +34,7 @@ RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
     # Download and install the release. \
     && homelab install-git-repo \
         https://github.com/sitaramc/gitolite.git \
-        v${GITOLITE_VERSION:?} \
+        ${GITOLITE_VERSION:?} \
         gitolite \
         gitolite-${GITOLITE_VERSION:?} \
         ${USER_NAME:?} \
