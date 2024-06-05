@@ -4,3 +4,22 @@ set -e -o pipefail
 # Add repo specific metadata here.
 
 UPSTREAM_IMAGE_CONFIG_KEY_PREFIX="BASE_IMAGE"
+TEST_TYPE="background"
+TEST_CONTAINER_TYPE="gitolite"
+TEST_CONTAINER_START_WAIT_SECONDS="10"
+
+test_start_container() {
+    local container_name="${1:?}"
+
+    docker run \
+        --name ${container_name:?} \
+        --detach \
+        --rm \
+        --publish 127.0.0.1:2222:2222 \
+        ${IMAGE:?}
+}
+
+test_image_after_container_startup() {
+    # TODO: Add tests.
+    :
+}
