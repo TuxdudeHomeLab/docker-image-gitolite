@@ -6,7 +6,7 @@ set -e -o pipefail
 PACKAGE_NAME="Gitolite"
 RELEASE_PACKAGE_NAME="Gitolite"
 RELEASE_TAG_PACKAGE_NAME="gitolite"
-UPSTREAM_IMAGE_CONFIG_KEY_PREFIX="BASE_IMAGE"
+BASE_IMAGE_CONFIG_KEY_PREFIX="BASE_IMAGE"
 UPSTREAM_VERSION_CONFIG_KEY="GITOLITE_VERSION"
 UPSTREAM_GIT_REPO="https://github.com/sitaramc/gitolite"
 TEST_TYPE="background"
@@ -18,7 +18,7 @@ current_upstream_version() {
 }
 
 latest_upstream_version() {
-    git_repo_latest_tag "${UPSTREAM_GIT_REPO:?}.git"
+    git_remote_repo_latest_tag "${UPSTREAM_GIT_REPO:?}.git"
 }
 
 update_latest_upstream_version() {
