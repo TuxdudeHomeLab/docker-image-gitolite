@@ -35,15 +35,25 @@ package_current_release_version() {
 
 test_start_container() {
     local container_name="${1:?}"
+    local ssh_key_file="$(mktemp --dry-run)"
+    ssh-keygen -t rsa -N "" -f "${ssh_key_file:?}" >/dev/null
+    local ssh_pub_key="$(cat ${ssh_key_file:?}.pub)"
+    rm ${ssh_key_file:?} ${ssh_key_file}.pub
+
     docker run \
         --name ${container_name:?} \
+        --env "GITOLITE_ADMIN_SSH_PUBLIC_KEY=${ssh_pub_key:?}" \
         --detach \
         --rm \
-        --publish 127.0.0.1:2222:2222 \
         ${IMAGE:?}
 }
 
 test_image_after_container_startup() {
-    # TODO: Add tests.
-    :
+    local container_name="${1:?}"
+    test_tcp_endpoint \
+        "${container_name:?}" \
+        "$(container_ip "${container_name}")" \
+        2222 \
+        5 \
+        '^SSH-2.0-OpenSSH_.+ Debian-.+$'
 }
