@@ -42,10 +42,11 @@ RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
     # Set up the necessary directories along with granting \
     # permissions to the user we created. \
     && mkdir -p /run /var/run/sshd /opt/logs \
-    && chown -R ${USER_NAME:?}:${GROUP_NAME:?} /run/ /var/run/sshd /etc/ssh /opt \
-    && chown -R root:root /opt/homelab \
+    && chown -R ${USER_NAME:?}:${GROUP_NAME:?} /run/ /var/run/sshd /etc/ssh /opt/logs /opt/gitolite /opt/gitolite-${GITOLITE_VERSION:?} \
+    && chmod o+w /opt/bin \
     # Install the gitolite binary. \
     && su --login --shell /bin/bash --command "/opt/gitolite/install -ln /opt/bin" ${USER_NAME:?} \
+    && chmod o-w /opt/bin \
     # Copy the start-gitolite.sh script. \
     && cp /scripts/start-gitolite.sh /opt/gitolite/ \
     && ln -sf /opt/gitolite/start-gitolite.sh /opt/bin/start-gitolite \
