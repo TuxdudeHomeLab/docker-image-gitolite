@@ -4,7 +4,7 @@ set -e -o pipefail
 sshd_base_dir="/home/gitolite/sshd"
 sshd_config="${sshd_base_dir:?}/sshd_config"
 sshd_host_key="${sshd_base_dir:?}/host_rsa_key"
-gitolite_admin_pub_key="$HOME/.gitolite/keydir/key.pub"
+gitolite_admin_pub_key_base="$HOME/.gitolite/keydir"
 
 setup_gitolite_sshd() {
     echo "Checking for existing Gitolite Host SSH keys ..."
@@ -35,6 +35,13 @@ EOF
 }
 
 setup_gitolite_admin_public_key() {
+    if [ "${GITOLITE_ADMIN_USER}" == "" ]; then
+        echo "GITOLITE_ADMIN_USER environment variable cannot be empty"
+        echo "Specify the relative path to the admin key file under ${gitolite_admin_pub_key_base:?}"
+        exit 1
+    fi
+
+    local gitolite_admin_pub_key="${gitolite_admin_pub_key_base:?}/${GITOLITE_ADMIN_USER:?}.pub"
     if [ -f "${gitolite_admin_pub_key:?}" ]; then
         echo "Existing Gitolite Admin Public key found at ${gitolite_admin_pub_key:?}"
         if [[ "${GITOLITE_ADMIN_SSH_PUBLIC_KEY_FORCE_OVERWRITE}" != "1" ]]; then
@@ -63,10 +70,11 @@ setup_gitolite_admin_public_key() {
     mkdir -p $HOME/.ssh ${admin_key_temp_dir:?}
     touch $HOME/.ssh/authorized_keys
 
-    echo "${GITOLITE_ADMIN_SSH_PUBLIC_KEY:?}" > ${admin_key_temp_dir:?}/key.pub
+    echo "${GITOLITE_ADMIN_SSH_PUBLIC_KEY:?}" > ${admin_key_temp_dir:?}/${GITOLITE_ADMIN_USER:?}.pub
     unset GITOLITE_ADMIN_SSH_PUBLIC_KEY
-    gitolite setup --pubkey ${admin_key_temp_dir:?}/key.pub
+    gitolite setup --pubkey ${admin_key_temp_dir:?}/${GITOLITE_ADMIN_USER:?}.pub
     rm -rf ${admin_key_temp_dir:?}
+    unset GITOLITE_ADMIN_USER
 
     echo
 }

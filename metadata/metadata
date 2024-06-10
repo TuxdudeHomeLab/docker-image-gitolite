@@ -45,6 +45,7 @@ test_start_container() {
 
     docker run \
         --name ${container_name:?} \
+        --env "GITOLITE_ADMIN_USER=foobarbaz" \
         --env "GITOLITE_ADMIN_SSH_PUBLIC_KEY=${ssh_pub_key:?}" \
         --detach \
         --rm \
