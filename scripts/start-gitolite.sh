@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e -o pipefail
+set -E -e -o pipefail
 
 sshd_base_dir="/home/gitolite/sshd"
 sshd_config="${sshd_base_dir:?}/sshd_config"
