@@ -6,6 +6,12 @@ sshd_config="${sshd_base_dir:?}/sshd_config"
 sshd_host_key="${sshd_base_dir:?}/host_rsa_key"
 gitolite_admin_pub_key_base="$HOME/.gitolite/keydir"
 
+set_umask() {
+    # Configure umask to allow write permissions for the group by default
+    # in addition to the owner.
+    umask 0002
+}
+
 setup_gitolite_sshd() {
     echo "Checking for existing Gitolite Host SSH keys ..."
     echo
@@ -94,5 +100,6 @@ start_gitolite_sshd () {
     exec /usr/sbin/sshd -D -e -f ${sshd_config:?}
 }
 
+set_umask
 setup_gitolite
 start_gitolite_sshd
