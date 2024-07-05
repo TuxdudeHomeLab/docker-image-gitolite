@@ -55,9 +55,8 @@ RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
     && homelab cleanup
 
 ENV USER=${USER_NAME}
-ENV PATH="/opt/bin:${PATH}"
-
 USER ${USER_NAME}:${GROUP_NAME}
 WORKDIR /home/${USER_NAME}
+
 CMD ["start-gitolite"]
 STOPSIGNAL SIGQUIT
