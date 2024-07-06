@@ -1,0 +1,50 @@
+diff -r -u a/gitolite/src/lib/Gitolite/Common.pm b/gitolite/src/lib/Gitolite/Common.pm
+--- a/gitolite/src/lib/Gitolite/Common.pm	2024-07-06 15:35:03.945676070 -0700
++++ b/gitolite/src/lib/Gitolite/Common.pm	2024-07-06 16:20:01.299466856 -0700
+@@ -301,45 +301,7 @@
+     my $ts = gen_ts();
+     my $tid = $ENV{GL_TID} ||= $$;
+ 
+-    $log_dest = $Gitolite::Rc::rc{LOG_DEST} || '' if not defined $log_dest;
+-
+-    # log (update records only) to "gl-log" in the bare repo dir; this is to
+-    # make 'who-pushed' more efficient.  Since this is only for the update
+-    # records, it is not a replacement for the other two types of logging.
+-    if ($log_dest =~ /repo-log/ and $_[0] eq 'update') {
+-        # if the log line is 'update', we're already in the bare repo dir
+-        open my $lfh, ">>", "gl-log" or _die "open gl-log failed: $!";
+-        print $lfh "$ts\t$tid\t$msg\n";
+-        close $lfh;
+-    }
+-
+-    # syslog
+-    if ($log_dest =~ /syslog/) {            # log_dest *includes* syslog
+-        if ($syslog_opened == 0) {
+-            require Sys::Syslog;
+-            Sys::Syslog->import(qw(:standard));
+-
+-            openlog("gitolite" . ( $ENV{GL_TID} ? "[$ENV{GL_TID}]" : "" ), "pid", $Gitolite::Rc::rc{LOG_FACILITY} || 'local0');
+-            $syslog_opened = 1;
+-        }
+-
+-        # gl_log is called either directly, or, if the rc variable LOG_EXTRA
+-        # is set, from trace(1, ...).  The latter use is considered additional
+-        # info for troubleshooting.  Trace prefixes a tab to the arguments
+-        # before calling gl_log, to visually set off such lines in the log
+-        # file.  Although syslog eats up that leading tab, we use it to decide
+-        # the priority/level of the syslog message.
+-        syslog( ( $msg =~ /^\t/ ? 'debug' : 'info' ), "%s", $msg);
+-
+-        return if $log_dest !~ /normal/;
+-    }
+-
+-    my $fh;
+-    logger_plus_stderr( "errors found before logging could be setup", "$msg" ) if not $ENV{GL_LOGFILE};
+-    open my $lfh, ">>", $ENV{GL_LOGFILE}
+-      or logger_plus_stderr( "errors found but logfile could not be created", "$ENV{GL_LOGFILE}: $!", "$msg" );
+-    print $lfh "$ts\t$tid\t$msg\n";
+-    close $lfh;
++    print STDERR "$ts\t$tid\t$msg\n";
+ }
+ 
+ sub logger_plus_stderr {

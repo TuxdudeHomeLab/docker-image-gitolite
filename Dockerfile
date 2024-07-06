@@ -2,9 +2,10 @@
 
 ARG BASE_IMAGE_NAME
 ARG BASE_IMAGE_TAG
-FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG} AS with-scripts
+FROM ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG} AS with-scripts-and-patches
 
 COPY scripts/start-gitolite.sh /scripts/
+COPY patches /patches
 
 ARG BASE_IMAGE_NAME
 ARG BASE_IMAGE_TAG
@@ -19,10 +20,13 @@ ARG GROUP_ID
 ARG GITOLITE_VERSION
 ARG PACKAGES_TO_INSTALL
 
-RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
+# hadolint ignore=DL4006,SC2035
+RUN \
+    --mount=type=bind,target=/scripts,from=with-scripts-and-patches,source=/scripts \
+    --mount=type=bind,target=/patches,from=with-scripts-and-patches,source=/patches \
     set -E -e -o pipefail \
     # Install dependencies. \
-    && homelab install util-linux \
+    && homelab install util-linux patch \
     && homelab install $PACKAGES_TO_INSTALL \
     # Create the user and the group. \
     && homelab add-user \
@@ -39,6 +43,10 @@ RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
         gitolite-${GITOLITE_VERSION:?} \
         ${USER_NAME:?} \
         ${GROUP_NAME:?} \
+    # Patch gitolite. \
+    && pushd /opt/gitolite \
+    && (find /patches -iname *.diff -print0 | sort -z | xargs -0 -n 1 patch -p2 -i) \
+    && popd \
     # Set up the necessary directories along with granting \
     # permissions to the user we created. \
     && mkdir -p /run /var/run/sshd /opt/logs \
@@ -51,7 +59,7 @@ RUN --mount=type=bind,target=/scripts,from=with-scripts,source=/scripts \
     && cp /scripts/start-gitolite.sh /opt/gitolite/ \
     && ln -sf /opt/gitolite/start-gitolite.sh /opt/bin/start-gitolite \
     # Clean up. \
-    && homelab remove util-linux \
+    && homelab remove util-linux patch \
     && homelab cleanup
 
 ENV USER=${USER_NAME}
