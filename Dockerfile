@@ -66,5 +66,5 @@ ENV USER=${USER_NAME}
 USER ${USER_NAME}:${GROUP_NAME}
 WORKDIR /home/${USER_NAME}
 
-CMD ["start-gitolite"]
+CMD ["--picoinit-cmd", "start-gitolite", "--picoinit-cmd", "tail", "-F", "/var/tmp/gitolite.log"]
 STOPSIGNAL SIGTERM
