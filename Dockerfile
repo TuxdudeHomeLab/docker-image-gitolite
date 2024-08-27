@@ -25,6 +25,7 @@ RUN \
     --mount=type=bind,target=/scripts,from=with-scripts-and-patches,source=/scripts \
     --mount=type=bind,target=/patches,from=with-scripts-and-patches,source=/patches \
     set -E -e -o pipefail \
+    && export HOMELAB_VERBOSE=y \
     # Install dependencies. \
     && homelab install util-linux patch \
     && homelab install $PACKAGES_TO_INSTALL \
