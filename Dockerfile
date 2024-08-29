@@ -18,7 +18,7 @@ ARG GROUP_ID
 ARG GITOLITE_VERSION
 ARG PACKAGES_TO_INSTALL
 
-# hadolint ignore=DL4006,SC2035
+# hadolint ignore=DL4006,SC2035,SC3044
 RUN \
     --mount=type=bind,target=/scripts,from=with-scripts-and-patches,source=/scripts \
     --mount=type=bind,target=/patches,from=with-scripts-and-patches,source=/patches \
