@@ -44,7 +44,7 @@ RUN \
         ${GROUP_NAME:?} \
     # Patch gitolite. \
     && pushd /opt/gitolite \
-    && (find /patches -iname *.diff -print0 | sort -z | xargs -0 -n 1 patch -p2 -i) \
+    && (find /patches -iname *.diff -print0 | sort -z | xargs -0 -r -n 1 patch -p2 -i) \
     && popd \
     # Set up the necessary directories along with granting \
     # permissions to the user we created. \
